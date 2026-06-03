@@ -4,30 +4,11 @@ soundscape-music-agent의 핵심 알고리즘: **[상황 인식 → 감정 추�
 
 ### 1. KPI정의
 
-- 알고리즘 성능 지표
-    - **Context-Sentiment Accuracy (상황, 감정 정확도 ):** LLM이 추론한 감정 키워드와 사용자가 사전에 설정한 실제 감정이 일치하는 비율 측정
-    - ~~**Hit@K / Precision@K (정밀도):** 추천 목록 상위 K개 항목 중 사용자가 실제로 선호하는(클릭하거나 재생하는 등) 항목의 비율입니다. → 플레이리스트 딥링크 제공이라 사용자가 플레이리스트 내부의 어떤 곡을 선택했는지 알 수 없음.~~
-    - **~~Recall@K (재현율):** 사용자가 실제로 선호하는 전체 항목 중에서 추천 목록 상위 K개에 포함된 항목의 비율입니다. → 좋아요표시가 플레이리스트 단위로 이루어져 어떤 항목을 실제로 선호하는 지 알 수가 없음~~
-        - **~~Seed Track Match:** 사용자가 사전에 설정한 '선호 장르/아티스트'가 추천된 플레이리스트 내에 포함된 비율(%)로 측정.(플레이리스트를 언제 하나씩 다 까봐..)~~
-    - **다양성 (Diversity) :** 추천 결과가 얼마나 다양한지 측정, 트랙별 장르를 알 수 없기 때문에 국가 다양성으로 측정
-    - **~~참신성 (Novelty):** 사용자가 이미 알고 있는 곡이 아닌 새로운 곡을 얼마나 추천하는지를 측정 → 사용자가 이미 아는 곡인지 판별 불가 (Spotify 감상 기록 연동 없이는 불가)~~
-        - **Discovery Score:** 추천된 곡들의 'Spotify Popularity Index'(인기도 지수)가 낮은 곡(비주류 곡)이 포함된 비중을 계산하여 참신성 간접 측정.
-    - **Agent Latency (에이전트 지연 시간):** 소리 분석 시작부터 음악 추천까지 걸리는 시간 (사용자 경험 유지).
-    - **~~Tool Call Success Rate:** 에이전트가 Spotify API나 검색 도구를 오류 없이 호출한 비율.~~
-    - **~~Re-prompting Rate:** 음악 추천 결과가 부적절하여 에이전트 내부적으로 다시 계획(Planning)을 세운 횟수.~~
-    - **~~NDCG (Normalized Discounted Cumulative Gain):** 랭킹 기반 추천 시스템에서 매우 중요한 지표로, 추천된 항목의 순위와 관련성을 모두 고려합니다. 상위 순위에 있는 관련성 높은 항목에 더 큰 가중치를 부여합니다.~~
-        - ~~NDCG를 측정하려면 각 추천 결과에 대해 유저가 매긴 '관련성 점수(Relevance)'가 필요한데, 현재는 rating이 전체 플레이리스트 단위로 되어 있습니다. 만약 트랙별로 '좋아요/넘기기' 데이터가 있다면 훨씬 정확한 랭킹 분석이 가능합니다.~~
-    - **RMSE (Root Mean Square Error):** 사용자의 예상 평점과 실제 평점 간의 오차를 측정(팝업창을 통해 추천만족도 데이터를 받음)
-- 비즈니스 성과 지표
-    - **Deep Link Conversion (DLC):** 추천 결과를 본 사용자 중 실제로 'Spotify에서 듣기' 버튼을 누른 사용자의 비율로 정의.
-    - **~~Re-recommendation Rate :** 첫 추천 후 '다시 추천받기'를 누른 비율 (Skip Rate 대체)~~
-    - **~~Listening Duration (평균 청취 시간):** 추천된 리스트를 얼마나 오랫동안 유지하며 듣는지. → 플레이리스트 딥링크 제공이라 Spotify 앱으로 넘어간 이후의 재생 시간 확인 불가.~~
-        - **Re-entry Rate:** 딥링크 클릭 후 다시 우리 앱으로 돌아오기까지의 시간이나, 당일 재방문율을 통해 만족도 간접 추정.
-        - **App Stay Time**: spotify_link_click.xlsx의 minutes_from_creation을 통해 유저가 추천을 받고 얼마나 빨리 행동(클릭)했는지 분포를 확인
-    - **~~Positive Feedback Rate:** '좋아요' 또는 '리스트 저장'과 같은 긍정적 인터랙션 비율.~~
-        - will_reuse 응답으로 대체
-    - **Churn Rate (고객 이탈률):** 서비스를 특정기간이상 이용하지 않는 비율
-    
+- Context-Sentiment Accuracy
+- Persona-Genre Accuracy
+- Agent Latency
+- Deep Link Conversion
+- Satisfaction RMSE
 
 ### 2. KPI측정
 
@@ -41,8 +22,6 @@ soundscape-music-agent의 핵심 알고리즘: **[상황 인식 → 감정 추�
 
 [KPI 1] Context-Sentiment Accuracy: 81.17%
 [KPI 2] Persona-Genre Accuracy: 100.00%
-
-!image.png
 
 ```markdown
 - 높은 반영률: 페르소나 정확도가 **100%**인 것으로 보아 에이전트가 유저의 선호 장르를 요약 문장에 완벽히 반영하고 있으며, 상황 정확도 역시 **81%**로 높은 수준을 유지하여 유저의 입력 맥락(장소, 목표)을 대부분 놓치지 않고 추천 사유에 녹여내고 있습니다.
@@ -65,11 +44,7 @@ soundscape-music-agent의 핵심 알고리즘: **[상황 인식 → 감정 추�
 - 최장 지연 시간: 18.97초
 - 최단 지연 시간: 1.01초
 
-!image.png
-
 날짜가 경과함에 따라(최근으로 올수록) 에이전트의 응답 속도가 개선되고 있는지 확인하기 위해, 시계열 추세 분석(Time-series Trend Analysis)
-
-!image.png
 
 날짜와 지연 시간 간의 상관계수: -0.2231
 (음수일 경우 최근으로 올수록 지연 시간이 줄어들고 있음을 의미합니다.)
@@ -88,8 +63,6 @@ soundscape-music-agent의 핵심 알고리즘: **[상황 인식 → 감정 추�
 
 2.4.2 상황별(Location x Goal) 전환율: 추천 엔진이 특정 장소나 목적에서 약점을 보이는지 확인, `playlists.xlsx`의 `id`(PK)와 `spotify_link_click.xlsx`의 `playlist_id`(FK)를 기준으로 Left Join을 수행
 
-!image.png
-
 [개선 필요] 전환율이 가장 낮은 상황 TOP 5:
 location  goal
 카페        분노       0.0
@@ -99,8 +72,6 @@ location  goal
 카페        위로      50.0
 
 2.4.3 특정 상황(Location x Goal)별로 전환율(DLC)과 지연 시간(Latency)의 상관관계를 분석 :  전환율이 낮은 이유가 응답이 늦어서인지 추천내용이 별로인지 구분 가능
-
-!image.png
 
 ```markdown
 - 높은 전반적 수용도: 전체 DLC가 **85.15%**에 달하는 것은 에이전트의 추천이 대다수 유저의 니즈를 만족시키고 있음을 보여주며, 특히 특정 장소와 목표가 결합된 상황에서 강력한 전환 동기를 제공하고 있습니다.
@@ -118,8 +89,6 @@ location  goal
 
 복합 키 매칭 결과: 26개의 유효 데이터가 매칭되었습니다.
 Satisfaction RMSE: 1.1353
-
-!image.png
 
 ```markdown
 - 예측 모델의 오차 존재: RMSE가 약 1.14로 나타난 것은 시스템이 지연 시간(Latency)만으로 예측한 만족도와 유저의 실제 별점 사이에 평균 1점 이상의 차이가 있음을 의미하며, 이는 유저가 속도뿐만 아니라 추천된 곡의 품질이나 분위기 등 콘텐츠 자체를 중요하게 평가하고 있음을 시사합니다.
@@ -264,7 +233,6 @@ KPI자동화를 구축하기 위한 데이터 부족으로 현재 가진
         - **의미:** "우리 서비스는 주로 '코워킹' 장소에서 '활력'을 얻기 위해 가장 많이 사용됨." (서비스의 주 타겟 상황 정의) -
         - 
         
-        !image.png
         
     - **추천 결과의 세부 만족도 분석**: `review.xlsx`에서 사용자들이 설정한 `preferred_mood`와 `lyrics_preference`의 비중을 분석합니다.
         - **의미:** "사용자들은 전반적으로 가사가 있는 곡(`lyrics_on`)을 선호하며, '에너제틱'한 분위기를 더 기대하는 경향이 있음."
@@ -311,28 +279,21 @@ KPI자동화를 구축하기 위한 데이터 부족으로 현재 가진
 1. 사용자 경향성 분석
 - playlists_final.xlsx에서 에이전트가 가장 많이 생성한 location, goal,decibel 비중을 구함 -> bar차트
 
-!image.png
 
 - location x goal 비중 → 히트맵
 
-!image.png
-
 - review.xlsx에서 preferred_mood와 lyrics_preference의 비중을 분석함. -> pie차트
 
-!image.png
 
 1. 사용자 만족도 분석
 - rating의 평균값(평점 평균)과 will_reuse(재사용 의사 비율 )
     
-    !스크린샷 2026-01-17 211526.png
     
 - will_reuse 별 사용자들의 평균 rating
     
-    !스크린샷 2026-01-17 211953.png
     
 - 가사선호, 선호무드별 평균 평점
 
-!image.png
 
 1. 사용자 유형별 그룹화
 
@@ -357,32 +318,24 @@ KPI자동화를 구축하기 위한 데이터 부족으로 현재 가진
 
 - 충성파들의 주요 시나리오 분석 (충성파들의 주된 입력값들이 뭔지 분석)
 
-!image.png
 
 - 충성파들의 preferred_mood와 lyrics_preference 분석
 
-!image.png
 
 - 이탈위험파 들의 주요 시나리오 분석 (이탈위험파들의 주된 입력값들이 뭔지 분석)
 - 이탈위험파들의 preferred_mood와 lyrics_preference 분석
 
-!image.png
 
 - 이탈위험파들은 수가 많지 않으므로 칼럼전체를 직접 출력해서 확인
     
-    !스크린샷 2026-01-17 220851.png
     
 
 1. 빈도분석
 - 사용자가 특정 기간 동안 얼마나 자주 플레이리스트 생성을 요청했는지 분석 -> playlists_final.xlsx의 user_id별 행 개수 카운트.
 
-!image.png
 
 - 이탈위험파들과 충성파들의 빈도분석 비교
 
-!image.png
-
-!스크린샷 2026-01-17 220928.png
 
 1. 시계열 분석
 - 충성파 중 생성 빈도가 가장 높은 Top 3 유저와 이탈 위험파 전원을 선별하여, 시간 흐름에 따른 서비스 이용 패턴(생성 횟수)을 비교 분석
@@ -396,11 +349,6 @@ KPI자동화를 구축하기 위한 데이터 부족으로 현재 가진
 - 이탈위험파 전원: [np.int64(11), np.int64(14)]
 </aside>
 
-!image.png
 
 1. 최신성분석
 - 충성파, 이탈위험파별 사용자가 마지막으로 플레이리스트를 생성한 시점 분석
-
-!image.png
-
-!스크린샷 2026-01-17 221049.png
