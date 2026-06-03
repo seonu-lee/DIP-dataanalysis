@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DIP 프로젝트 — 데이터 분석 포트폴리오</title>
+  <meta name="description" content="LLM 기반 음악 추천 서비스에서 평가 기준을 직접 설계한 데이터 분석 포트폴리오" />
+
+  <!-- Pretendard (Korean web font, Toss/Kakao style) -->
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- =============================================
+     NAVIGATION
+     ============================================= -->
+<nav class="nav" id="top-nav">
+  <div class="nav__inner">
+    <div class="nav__logo">DIP <span>Portfolio</span></div>
+
+    <ul class="nav__links">
+      <li><a href="#problem">문제 정의</a></li>
+      <li><a href="#dataset">데이터</a></li>
+      <li><a href="#process">분석 과정</a></li>
+      <li><a href="#findings">핵심 결과</a></li>
+      <li><a href="#impact">비즈니스 가치</a></li>
+      <li><a href="#contribution">기여</a></li>
+      <li><a href="#differentiation">차별점</a></li>
+    </ul>
+
+    <!-- Mobile menu toggle -->
+    <button class="nav__menu-btn" id="menu-btn" aria-label="메뉴 열기">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile drawer -->
+  <nav class="nav__mobile" id="mobile-menu">
+    <a href="#problem">문제 정의</a>
+    <a href="#dataset">데이터</a>
+    <a href="#process">분석 과정</a>
+    <a href="#findings">핵심 결과</a>
+    <a href="#impact">비즈니스 가치</a>
+    <a href="#contribution">기여</a>
+    <a href="#differentiation">차별점</a>
+    <a href="#lessons">배운 점</a>
+  </nav>
+</nav>
+
+
+<!-- =============================================
+     HERO SECTION
+     ============================================= -->
+<section class="hero" id="hero">
+  <div class="container">
+
+    <div class="hero__eyebrow">
+      <span class="hero__eyebrow-dot"></span>
+      Data Analysis Portfolio &nbsp;·&nbsp; DIP Project &nbsp;·&nbsp; 2026
+    </div>
+
+    <h1 class="hero__headline">
+      LLM이 음악을 추천하면,<br>
+      <em>잘 됐다는 걸 어떻게 알 수 있나요?</em>
+    </h1>
+
+    <p class="hero__sub">
+      정답 레이블도 표준 지표도 없는 LLM 추천 환경에서<br>
+      평가 기준 자체를 처음부터 설계한 프로젝트
+    </p>
+
+    <!-- 4 key numbers -->
+    <div class="hero__stats">
+      <div class="stat-card">
+        <div class="stat-card__value">85.15<sup>%</sup></div>
+        <div class="stat-card__label">Deep Link Conversion</div>
+        <div class="stat-card__desc">실제로 Spotify에서 재생을 시도한 비율</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">81.17<sup>%</sup></div>
+        <div class="stat-card__label">Context-Sentiment Accuracy</div>
+        <div class="stat-card__desc">상황 맥락이 추천 이유에 반영된 정확도</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">18<sup>명</sup></div>
+        <div class="stat-card__label">실사용자 로그 확보</div>
+        <div class="stat-card__desc">사전배포 직접 제안·설계·실행, 약 300건</div>
+      </div>
+      <div class="stat-card stat-card--accent">
+        <div class="stat-card__value">→ 결정</div>
+        <div class="stat-card__label">개발 우선순위 변경</div>
+        <div class="stat-card__desc">분석 결과가 팀의 실제 방향을 바꿨다</div>
+      </div>
+    </div>
+
+    <!-- Tech stack -->
+    <div class="tech-stack">
+      <span class="tech-badge">Python</span>
+      <span class="tech-badge">pandas</span>
+      <span class="tech-badge">sklearn</span>
+      <span class="tech-badge">LangGraph</span>
+      <span class="tech-badge">Spotify API</span>
+      <span class="tech-badge">공공데이터 / Kaggle</span>
+      <span class="tech-badge">통계 분석</span>
+      <span class="tech-badge">시각화</span>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =============================================
+     PROBLEM SECTION
+     ============================================= -->
+<section class="section section--alt" id="problem">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Problem</div>
+      <h2 class="section-title">LLM 추천에는 정답이 없다.<br>그래서 기준을 만들었다.</h2>
+      <p class="section-desc">
+        기존 음악 스트리밍 서비스는 사용자가 직접 기분·장르를 선택합니다.
+        DIP는 위치·활동 목표·주변 소음(dB)을 LLM이 해석해 그 순간에 맞는 플레이리스트를 자동으로 구성합니다.
+        그런데 "잘 됐다"는 기준을 어떻게 정의할 것인가, 라는 근본적인 문제가 남았습니다.
+      </p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-card__icon problem-card__icon--red">⚠️</div>
+        <div class="problem-card__title">정답 레이블이 없다</div>
+        <div class="problem-card__text">
+          Precision, Recall, NDCG 같은 추천 시스템 표준 지표는 모두 "정답"을 전제합니다.
+          하지만 "이 상황에서 실제로 들을 법한 음악"이라는 정답 데이터가 존재하지 않습니다.
+        </div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-card__icon problem-card__icon--orange">🎯</div>
+        <div class="problem-card__title">측정하지 않으면 개선할 수 없다</div>
+        <div class="problem-card__text">
+          서비스의 개선 방향을 "느낌"이 아닌 데이터로 결정하려면,
+          먼저 무엇을 어떻게 측정할지를 정의해야 합니다. 평가 체계 설계 자체가 첫 번째 과제였습니다.
+        </div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-card__icon problem-card__icon--blue">📊</div>
+        <div class="problem-card__title">추천 로직의 근거가 "감"이었다</div>
+        <div class="problem-card__text">
+          "집중할 땐 lofi가 좋다"는 직관은 있지만, 수치 근거는 없었습니다.
+          어떤 소음 수준, 어떤 목표 조합에 어떤 음악이 맞는지를 데이터로 정의해야 했습니다.
+        </div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-card__icon problem-card__icon--green">🔗</div>
+        <div class="problem-card__title">범용적인 문제다</div>
+        <div class="problem-card__text">
+          LLM 출력물의 품질 평가는 뉴스 요약, AI 글쓰기 보조, 챗봇 등
+          모든 LLM 서비스가 공통으로 직면하는 미해결 문제입니다.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout__title">핵심 과제 정의</div>
+      <div class="callout__text">
+        "LLM 음악 추천 서비스에서 추천이 상황에 적합한지를 측정하고,
+        그 결과를 바탕으로 시스템을 개선하는 피드백 루프를 만들어라."
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =============================================
+     BUSINESS UNDERSTANDING SECTION
+     ============================================= -->
+<section class="section" id="business">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Business Understanding</div>
+      <h2 class="section-title">무엇을 달성하려 했는가</h2>
+      <p class="section-desc">
+        분석의 방향과 성공 기준을 먼저 명확히 정의했습니다.
+        목표 없는 분석은 결론 없는 탐색이 됩니다.
+      </p>
+    </div>
+
+    <div class="goals-grid">
+      <div class="goal-item">
+        <div class="goal-item__num">1</div>
+        <div class="goal-item__text">
+          <strong>추천 로직 수치화</strong>
+          외부 데이터로 "어떤 소음·목표엔 어떤 음악"을 감이 아닌 수치로 정의
+        </div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-item__num">2</div>
+        <div class="goal-item__text">
+          <strong>평가 기준 설계</strong>
+          정답 레이블 없이 서비스 맥락에 맞는 자체 KPI 설계·실측
+        </div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-item__num">3</div>
+        <div class="goal-item__text">
+          <strong>실사용자 검증</strong>
+          사전배포로 실제 로그를 수집하고 KPI를 실데이터로 측정
+        </div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-item__num">4</div>
+        <div class="goal-item__text">
+          <strong>개선 방향 도출</strong>
+          분석 결과가 팀의 의사결정으로 연결되는 흐름 확보
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI results table -->
+    <h3 class="decisions-list__title mt-10">최종 KPI 측정 결과 (5개)</h3>
+    <table class="kpi-table">
+      <thead>
+        <tr>
+          <th>KPI</th>
+          <th>측정 결과</th>
+          <th>왜 이 지표인가</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Deep Link Conversion (DLC)</strong></td>
+          <td><span class="kpi-value">85.15%</span></td>
+          <td>설문이나 텍스트가 아닌, 클릭이라는 행동으로 측정한 추천 수용도</td>
+        </tr>
+        <tr>
+          <td><strong>Context-Sentiment Accuracy</strong></td>
+          <td><span class="kpi-value">81.17%</span></td>
+          <td>LLM이 사용자 상황(소음·목표·위치)을 추천 이유에 반영했는지 여부</td>
+        </tr>
+        <tr>
+          <td><strong>Persona-Genre Accuracy</strong></td>
+          <td><span class="kpi-value">100%</span>
+            <span class="text-secondary" style="font-size:0.75rem;font-weight:400;display:block;margin-top:2px;">※ 키워드 포함 기준 — 관대한 측정</span>
+          </td>
+          <td>취향 정보(선호 장르·아티스트)가 추천 이유에 누락 없이 반영되었는지</td>
+        </tr>
+        <tr>
+          <td><strong>Agent Latency</strong></td>
+          <td><span class="kpi-value">평균 7.62s</span></td>
+          <td>추천 생성 응답 시간 — 사용자 이탈 유발 임계값 파악</td>
+        </tr>
+        <tr>
+          <td><strong>Satisfaction RMSE</strong></td>
+          <td><span class="kpi-value">1.1353</span></td>
+          <td>"응답 속도만으로 만족도를 설명할 수 없다"는 것을 수치로 검증</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+
+<!-- =============================================
+     DATASET SECTION
+     ============================================= -->
+<section class="section section--alt" id="dataset">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Dataset</div>
+      <h2 class="section-title">데이터는 어디서, 왜 그 데이터를?</h2>
+      <p class="section-desc">
+        외부 데이터 3종으로 추천 로직의 수치 근거를 만들고,
+        직접 설계한 사전배포로 실사용자 로그 3종을 수집했습니다.
+      </p>
+    </div>
+
+    <div class="dataset-groups">
+      <!-- External data -->
+      <div>
+        <div class="dataset-group__title">외부 데이터 — 추천 로직 근거</div>
+
+        <div class="dataset-card">
+          <div class="dataset-card__header">
+            <div>
+              <div class="dataset-card__name">한국환경공단 환경소음 측정 데이터</div>
+              <div class="dataset-card__source">공공데이터포털 · 2024년</div>
+            </div>
+            <span class="badge badge--blue">공공 API</span>
+          </div>
+          <p style="font-size:0.8125rem;color:var(--text-secondary);line-height:1.5;">
+            장소별 평균 소음 및 변동성 분석. 단순 평균이 아닌 표준편차까지 분석해
+            "이동 중(안정적 고소음)"과 "집(이벤트성 고소음)"을 구분했습니다.
+          </p>
+          <div class="dataset-card__vars">
+            <span class="var-tag">소음도(dBA)</span>
+            <span class="var-tag">측정지점</span>
+            <span class="var-tag">용도 구분</span>
+          </div>
+        </div>
+
+        <div class="dataset-card">
+          <div class="dataset-card__header">
+            <div>
+              <div class="dataset-card__name">RAED — RealLife Activity &amp; Environment Dataset</div>
+              <div class="dataset-card__source">Kaggle · 30,000행</div>
+            </div>
+            <span class="badge badge--green">30K rows</span>
+          </div>
+          <p style="font-size:0.8125rem;color:var(--text-secondary);line-height:1.5;">
+            행동별 실제 소음·활동량 수치화. 핵심 발견:
+            <strong>"장소보다 행동이 소음을 더 강하게 결정한다"</strong> —
+            침실에서 스트레스 상태(86dB)가 도서관 공부(44dB)보다 시끄럽습니다.
+          </p>
+          <div class="dataset-card__vars">
+            <span class="var-tag">행동 유형</span>
+            <span class="var-tag">위치(14종)</span>
+            <span class="var-tag">소음(dB)</span>
+            <span class="var-tag">활동량</span>
+            <span class="var-tag">조도</span>
+          </div>
+        </div>
+
+        <div class="dataset-card">
+          <div class="dataset-card__header">
+            <div>
+              <div class="dataset-card__name">Spotify Music Dataset (High &amp; Low Popularity)</div>
+              <div class="dataset-card__source">Kaggle · Spotify API 수집</div>
+            </div>
+            <span class="badge badge--orange">Spotify</span>
+          </div>
+          <p style="font-size:0.8125rem;color:var(--text-secondary);line-height:1.5;">
+            장르별 오디오 특성 평균 프로파일 구축.
+            소음·목표 조합에 수치 기준을 대응시켜 추천 임계값을 설정했습니다.
+          </p>
+          <div class="dataset-card__vars">
+            <span class="var-tag">energy</span>
+            <span class="var-tag">danceability</span>
+            <span class="var-tag">valence</span>
+            <span class="var-tag">tempo</span>
+            <span class="var-tag">instrumentalness</span>
+            <span class="var-tag">장르</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- User logs -->
+      <div>
+        <div class="dataset-group__title">실사용자 로그 — KPI 측정</div>
+        <p style="font-size:0.8125rem;color:var(--text-secondary);margin-bottom:var(--s4);line-height:1.5;">
+          사전배포 기간: 2026-01-01 ~ 01-17 &nbsp;·&nbsp; <strong>18명, 약 300건</strong><br>
+          팀 원안에 없던 사전배포를 직접 제안·실행하고 로그 스키마를 설계했습니다.
+        </p>
+
+        <div class="dataset-card">
+          <div class="dataset-card__header">
+            <div>
+              <div class="dataset-card__name">playlists_final.xlsx</div>
+              <div class="dataset-card__source">전체 추천 세션 로그</div>
+            </div>
+            <span class="badge badge--blue">핵심</span>
+          </div>
+          <div class="dataset-card__vars">
+            <span class="var-tag">user_id</span>
+            <span class="var-tag">location</span>
+            <span class="var-tag">goal</span>
+            <span class="var-tag">decibel</span>
+            <span class="var-tag">recommendation_reason</span>
+            <span class="var-tag">latency_ms</span>
+          </div>
+        </div>
+
+        <div class="dataset-card">
+          <div class="dataset-card__header">
+            <div>
+              <div class="dataset-card__name">spotify_link_click.xlsx</div>
+              <div class="dataset-card__source">딥링크 클릭 로그 (DLC 산출)</div>
+            </div>
+          </div>
+          <div class="dataset-card__vars">
+            <span class="var-tag">playlist_id (FK)</span>
+            <span class="var-tag">minutes_from_creation</span>
+            <span class="var-tag">clicked_at</span>
+          </div>
+        </div>
+
+        <div class="dataset-card">
+          <div class="dataset-card__header">
+            <div>
+              <div class="dataset-card__name">reviews.xlsx</div>
+              <div class="dataset-card__source">사용자 피드백</div>
+            </div>
+          </div>
+          <div class="dataset-card__vars">
+            <span class="var-tag">rating (0~4)</span>
+            <span class="var-tag">will_reuse</span>
+            <span class="var-tag">dislike_reason</span>
+            <span class="var-tag">preferred_mood</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data connection chain -->
+    <div class="data-chain">
+      <div class="data-chain__title">3개 데이터셋을 연결하면 추천 로직의 임계값이 나온다</div>
+      <div class="chain-steps">
+        <div class="chain-step">
+          <div class="chain-step__source">환경공단</div>
+          <div class="chain-step__insight">
+            "카페의 평균 소음은 <em>59.5dB</em>이고 변동성은 중간이다"
+          </div>
+        </div>
+        <div class="chain-step">
+          <div class="chain-step__source">RAED</div>
+          <div class="chain-step__insight">
+            "카페에서 공부할 때(<em>44.8dB</em>)와 식사할 때(<em>67.6dB</em>)는 <em>23dB 차이</em>다"
+          </div>
+        </div>
+        <div class="chain-step">
+          <div class="chain-step__source">Spotify</div>
+          <div class="chain-step__insight">
+            "44dB대 집중 상황에는 <em>instrumentalness 0.83의 lofi</em>가,
+            67dB대엔 <em>energy 0.64+ pop</em>이 적합하다"
+          </div>
+        </div>
+        <div class="chain-step">
+          <div class="chain-step__source" style="background-color:var(--color-primary);color:white;">추천 로직</div>
+          <div class="chain-step__insight" style="border-color:var(--color-primary);background-color:var(--color-primary-bg);">
+            <strong>"카페+40dB = lofi, 카페+60dB = 팝"</strong>
+            — 같은 장소라도 소음 수준에 따라 분기하는 수치 기반 로직
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =============================================
+     ANALYSIS PROCESS SECTION
+     ============================================= -->
+<section class="section" id="process">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Analysis Process</div>
+      <h2 class="section-title">어떻게 분석했는가</h2>
+      <p class="section-desc">
+        단순 나열이 아닌, 각 단계가 왜 필요했는지와
+        어떤 의사결정을 했는지 중심으로 설명합니다.
+      </p>
+    </div>
+
+    <div class="process-flow">
+
+      <!-- Step 1 -->
+      <div class="process-step">
+        <div class="process-step__left">
+          <div class="process-step__num">1</div>
+          <div class="process-step__line"></div>
+        </div>
+        <div class="process-step__body">
+          <div class="process-step__title">문제 재정의 — "정확함"이란 무엇인가</div>
+          <div class="process-step__desc">
+            추천 시스템 표준 평가 지표(Precision, Recall, NDCG)는 모두 정답 레이블을 전제합니다.
+            LLM 추천에서는 "사용자가 이 상황에서 실제로 들을 법한 음악"이라는 정답 데이터가 없습니다.
+            평가 자체가 문제였습니다.
+          </div>
+          <div class="decision-box">
+            표준 지표를 포기하고, 서비스 맥락에서 "잘 됐다"는 행동 신호를 찾는 방향으로 전환
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="process-step">
+        <div class="process-step__left">
+          <div class="process-step__num">2</div>
+          <div class="process-step__line"></div>
+        </div>
+        <div class="process-step__body">
+          <div class="process-step__title">외부 데이터 3종 분석 — 추천 로직 근거 수치화</div>
+          <div class="process-step__desc">
+            환경공단 · RAED · Spotify 데이터를 각각 분석한 후 연결해
+            소음×목표×위치 조합에 수치 기준을 부여했습니다.
+            핵심 발견은 "<strong>장소보다 행동이 소음을 더 강하게 결정한다</strong>"는 점이었고,
+            이것이 실시간 소음 측정이 필수라는 설계 근거가 됐습니다.
+          </div>
+
+          <!-- Activity noise chart -->
+          <div class="bar-chart" id="noise-chart">
+            <p style="font-size:0.8125rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.75rem;">
+              행동별 평균 소음 수준 (RAED 데이터)
+            </p>
+            <div class="bar-chart__row">
+              <div class="bar-chart__label">수면</div>
+              <div class="bar-chart__track"><div class="bar-chart__fill bar-chart__fill--green" style="width:22%"></div></div>
+              <div class="bar-chart__value">27.7 dB</div>
+            </div>
+            <div class="bar-chart__row">
+              <div class="bar-chart__label">도서관 학습</div>
+              <div class="bar-chart__track"><div class="bar-chart__fill bar-chart__fill--green" style="width:34%"></div></div>
+              <div class="bar-chart__value">44 dB</div>
+            </div>
+            <div class="bar-chart__row">
+              <div class="bar-chart__label">카페 학습</div>
+              <div class="bar-chart__track"><div class="bar-chart__fill bar-chart__fill--green" style="width:35%"></div></div>
+              <div class="bar-chart__value">44.8 dB</div>
+            </div>
+            <div class="bar-chart__row">
+              <div class="bar-chart__label">집 독서</div>
+              <div class="bar-chart__track"><div class="bar-chart__fill bar-chart__fill--gray" style="width:42%"></div></div>
+              <div class="bar-chart__value">53.4 dB</div>
+            </div>
+            <div class="bar-chart__row">
+              <div class="bar-chart__label">이동 중</div>
+              <div class="bar-chart__track"><div class="bar-chart__fill bar-chart__fill--orange" style="width:53%"></div></div>
+              <div class="bar-chart__value">67 dB</div>
+            </div>
+            <div class="bar-chart__row">
+              <div class="bar-chart__label">카페 식사</div>
+              <div class="bar-chart__track"><div class="bar-chart__fill bar-chart__fill--orange" style="width:54%"></div></div>
+              <div class="bar-chart__value">67.6 dB</div>
+            </div>
+            <div class="bar-chart__row">
+              <div class="bar-chart__label">침실 (스트레스)</div>
+              <div class="bar-chart__track"><div class="bar-chart__fill bar-chart__fill--red" style="width:87%"></div></div>
+              <div class="bar-chart__value">87.5 dB</div>
+            </div>
+          </div>
+          <p style="font-size:0.75rem;color:var(--text-tertiary);margin-top:0.5rem;">
+            같은 카페라도 공부(44.8dB)와 식사(67.6dB) 사이에 23dB 차이 — 장소만으로는 추천 로직을 만들 수 없다
+          </p>
+
+          <div class="decision-box mt-4">
+            소음 수준 1위, 사용자 목표 2위, 위치 3위로 추천 변수 우선순위 확정
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="process-step">
+        <div class="process-step__left">
+          <div class="process-step__num">3</div>
+          <div class="process-step__line"></div>
+        </div>
+        <div class="process-step__body">
+          <div class="process-step__title">추천 엔진 설계 — 3번의 방향 전환</div>
+          <div class="process-step__desc">
+            LLM에게 음악을 추천하게 하면 결과는 나옵니다. 하지만 "존재하지 않는 곡"을 생성하는
+            할루시네이션 문제와 168개 규칙의 복잡성을 거치며 세 번 방향을 바꿨습니다.
+          </div>
+
+          <table class="version-table">
+            <thead>
+              <tr>
+                <th>버전</th>
+                <th>방식</th>
+                <th>문제</th>
+                <th>결과</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>v1.0</td>
+                <td>Rule-based</td>
+                <td>168개 조합 룰, 다양성 부족</td>
+                <td><span class="status-tag status-tag--rejected">폐기</span></td>
+              </tr>
+              <tr>
+                <td>v1.5</td>
+                <td>단순 GPT 호출</td>
+                <td>존재하지 않는 곡·아티스트 생성 (할루시네이션)</td>
+                <td><span class="status-tag status-tag--rejected">폐기</span></td>
+              </tr>
+              <tr class="adopted">
+                <td>v2.0</td>
+                <td><strong>LangGraph + Spotify API</strong></td>
+                <td>—</td>
+                <td><span class="status-tag status-tag--adopted">채택</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="decision-box mt-4">
+            LLM은 상황 해석만, 실제 곡 검색은 Spotify API — 역할 분리로 할루시네이션 구조적 차단
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="process-step">
+        <div class="process-step__left">
+          <div class="process-step__num">4</div>
+          <div class="process-step__line"></div>
+        </div>
+        <div class="process-step__body">
+          <div class="process-step__title">KPI 설계 — 8개 후보에서 5개로</div>
+          <div class="process-step__desc">
+            어떤 KPI를 채택했는지만큼 중요한 것은 왜 3개를 탈락시켰는지입니다.
+            측정 불가능한 것을 포기하고 현실 가능한 범위로 재조정했습니다.
+          </div>
+
+          <div class="kpi-selection">
+            <div class="kpi-group kpi-group--kept">
+              <div class="kpi-group__title">최종 채택 (5개)</div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Deep Link Conversion (DLC)</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Context-Sentiment Accuracy</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Persona-Genre Accuracy</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Agent Latency</div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Satisfaction RMSE</div>
+              </div>
+            </div>
+            <div class="kpi-group kpi-group--dropped">
+              <div class="kpi-group__title">탈락 (3개) — 이유 있는 제외</div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Search Hit Rate
+                  <span class="kpi-item__reason">엔진 구조에 내재화 → 별도 측정 불필요</span>
+                </div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Audio Feature Accuracy
+                  <span class="kpi-item__reason">Spotify Audio API 403 차단 (2024-11-26)</span>
+                </div>
+              </div>
+              <div class="kpi-item">
+                <div class="kpi-item__dot"></div>
+                <div class="kpi-item__text">Re-roll Rate
+                  <span class="kpi-item__reason">retry 세션이 신규 세션과 동일하게 기록 → 구분 불가</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="process-step">
+        <div class="process-step__left">
+          <div class="process-step__num">5</div>
+          <div class="process-step__line"></div>
+        </div>
+        <div class="process-step__body">
+          <div class="process-step__title">사전배포 직접 제안 ← 팀 원안에 없던 단계</div>
+          <div class="process-step__desc">
+            팀 일정에 사전배포가 포함되어 있지 않았습니다.
+            그러나 실사용자 로그 없이는 설계한 KPI 중 어느 것도 실측이 불가능했습니다.
+            <strong>"로그 없이는 KPI 측정 불가"</strong>라는 논리로 팀을 설득했고,
+            수집할 로그 스키마를 직접 정의해 개발팀에 전달했습니다.
+          </div>
+          <div class="decision-box">
+            "측정 가능한 환경을 먼저 만들어야 한다" — 데이터가 없으면 분석도 없다
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="process-step">
+        <div class="process-step__left">
+          <div class="process-step__num">6</div>
+          <div class="process-step__line"></div>
+        </div>
+        <div class="process-step__body">
+          <div class="process-step__title">사용자 로그 분석 — 6가지 분석</div>
+          <div class="process-step__desc">
+            단순 현황 파악에 그치지 않고, 각 분석이 개선 방향을 향하도록 설계했습니다.
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3);">
+            <span class="tech-badge">경향성 분석</span>
+            <span class="tech-badge">만족도 분석</span>
+            <span class="tech-badge">세그먼트 분석</span>
+            <span class="tech-badge">빈도 분석</span>
+            <span class="tech-badge">시계열 분석</span>
+            <span class="tech-badge">최신성 분석</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 7 -->
+      <div class="process-step">
+        <div class="process-step__left">
+          <div class="process-step__num">7</div>
+        </div>
+        <div class="process-step__body">
+          <div class="process-step__title">인사이트 → 팀 의사결정 반영</div>
+          <div class="process-step__desc">
+            이탈 원인 분석 결과를 팀에 공유했고,
+            "개인화 기능 도입 시 응답 속도 모니터링 강화"로 개발 우선순위가 변경됐습니다.
+          </div>
+          <div class="decision-box">
+            분석은 보고서가 아니라 결정으로 완성된다
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /process-flow -->
+  </div>
+</section>
+
+
+<!-- =============================================
+     KEY FINDINGS SECTION
+     ============================================= -->
+<section class="section section--alt" id="findings">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Key Findings</div>
+      <h2 class="section-title">데이터가 말한 것</h2>
+      <p class="section-desc">
+        6가지 분석 결과, 수치보다 중요한 것은 수치가 의미하는 맥락입니다.
+      </p>
+    </div>
+
+    <!-- Finding 1: DLC -->
+    <div class="finding-card">
+      <div class="finding-card__header">
+        <div class="finding-card__num">01</div>
+        <div class="finding-card__title">85%가 실제로 들으러 갔다 — 하지만 전부가 아니다</div>
+      </div>
+      <div class="finding-card__body">
+        전체 DLC 85.15%는 강점입니다. 그러나 상황별로 보면 뚜렷한 약점이 드러납니다.
+        공공 공간(카페, 도서관)에서 개인적인 감정 케어(분노, 위로)를 요청하는 조합에서
+        전환율이 급락합니다. <strong>어디가 문제인지 특정했다는 것 자체가 성과입니다.</strong>
+      </div>
+
+      <div style="margin-bottom:var(--s4);">
+        <p style="font-size:0.8125rem;font-weight:600;color:var(--text-secondary);margin-bottom:0.75rem;">
+          DLC 하위 조합 (약점 지도)
+        </p>
+        <div class="dlc-highlight dlc-highlight--critical">
+          <div class="dlc-highlight__combo">카페 × 분노</div>
+          <div class="dlc-highlight__pct">0%</div>
+        </div>
+        <div class="dlc-highlight dlc-highlight--warning">
+          <div class="dlc-highlight__combo">도서관 × 위로</div>
+          <div class="dlc-highlight__pct">25%</div>
+        </div>
+        <div class="dlc-highlight dlc-highlight--warning">
+          <div class="dlc-highlight__combo">코워킹 × 미설정</div>
+          <div class="dlc-highlight__pct">40%</div>
+        </div>
+        <div class="dlc-highlight dlc-highlight--warning">
+          <div class="dlc-highlight__combo">도서관 × 휴식</div>
+          <div class="dlc-highlight__pct">50%</div>
+        </div>
+        <div class="dlc-highlight dlc-highlight--warning">
+          <div class="dlc-highlight__combo">카페 × 위로</div>
+          <div class="dlc-highlight__pct">50%</div>
+        </div>
+        <!-- Overall reference -->
+        <div style="display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s4);background-color:var(--green-bg);border:1px solid var(--green);border-radius:var(--r-lg);margin-top:var(--s3);">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);flex:1;">전체 평균 (기준)</div>
+          <div style="font-size:1rem;font-weight:800;color:var(--green);">85.15%</div>
+        </div>
+      </div>
+
+      <div class="insight-callout">
+        <strong>인사이트:</strong> 공간의 사회적 성격과 사용자의 감정 상태가 충돌할 때 추천 로직이 약해집니다.
+        "공공 공간 + 개인 감정 케어" 조합에 대한 별도 추천 로직 또는 맥락적 안내가 필요합니다.
+      </div>
+    </div>
+
+    <!-- Finding 2: Latency Timeline -->
+    <div class="finding-card">
+      <div class="finding-card__header">
+        <div class="finding-card__num">02</div>
+        <div class="finding-card__title">응답 시간은 단순히 줄어들지 않았다 — 급등, 그리고 급락</div>
+      </div>
+      <div class="finding-card__body">
+        상관계수(-0.2231)만 보면 "시간이 지날수록 빨라졌다"로 읽힙니다.
+        그러나 실제 시계열은 <strong>안정(7초대) → 개인화 도입 후 급등(14초대) → 최적화 후 급락(3초대)</strong>입니다.
+        수치 하나보다 패턴이 더 많은 것을 말해줍니다.
+      </div>
+
+      <!-- Canvas chart -->
+      <div class="chart-container">
+        <canvas id="latencyChart" width="800" height="320"
+          style="border:1px solid var(--border);border-radius:var(--r-lg);"></canvas>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <div class="legend-item__dot legend-item__dot--blue"></div>
+          응답 시간 (초)
+        </div>
+        <div class="legend-item">
+          <div class="legend-item__dot legend-item__dot--orange"></div>
+          개인화 기능 도입 (Jan 6)
+        </div>
+        <div class="legend-item">
+          <div class="legend-item__dot legend-item__dot--green"></div>
+          성능 최적화 시작 (Jan 12)
+        </div>
+      </div>
+
+      <div class="insight-callout mt-4">
+        <strong>인사이트:</strong> 신기능 도입 직후 성능 저하는 예측 가능한 패턴입니다.
+        변경 직후 일주일간 집중 모니터링 체계가 필요하다는 구체적 근거입니다.
+      </div>
+    </div>
+
+    <!-- Finding 3: User Segments -->
+    <div class="finding-card">
+      <div class="finding-card__header">
+        <div class="finding-card__num">03</div>
+        <div class="finding-card__title">초기 몇 회가 장기 사용 여부를 결정한다</div>
+      </div>
+      <div class="finding-card__body">
+        만족도 3.27/4.0, 재사용 의사 93.3%. 하지만 세그먼트를 나누면 전혀 다른 이야기가 나옵니다.
+        충성파와 이탈 위험파의 사용 빈도 차이는 거의 4배입니다.
+      </div>
+
+      <div class="segment-compare">
+        <div class="segment-card segment-card--loyal">
+          <div class="segment-card__label">충성파 (15명)</div>
+          <div class="segment-card__value">23.3<span style="font-size:1.25rem;font-weight:600;">회</span></div>
+          <div class="segment-card__sub">평점 ≥3.0 &amp; 재사용 Yes</div>
+        </div>
+        <div class="segment-card segment-card--churn">
+          <div class="segment-card__label">이탈 위험파 (2명)</div>
+          <div class="segment-card__value">6.0<span style="font-size:1.25rem;font-weight:600;">회</span></div>
+          <div class="segment-card__sub">평점 ≤2.0 &amp; 재사용 No</div>
+        </div>
+      </div>
+
+      <div class="insight-callout mt-4">
+        <strong>인사이트:</strong> 초기 경험이 기대를 충족하지 못하면 회복이 어렵습니다.
+        신규 사용자 첫 3~5회 추천 품질을 최우선으로 관리해야 합니다.
+      </div>
+    </div>
+
+    <!-- Finding 4: Churn Cause -->
+    <div class="finding-card">
+      <div class="finding-card__header">
+        <div class="finding-card__num">04</div>
+        <div class="finding-card__title">이탈 원인은 단일하지 않다 — 두 갈래</div>
+      </div>
+      <div class="finding-card__body">
+        이탈 위험파 2명의 피드백을 개별 심층 분석한 결과, 이탈 원인이 서로 다른 방향이었습니다.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);margin:var(--s5) 0;">
+        <div style="padding:var(--s4);background-color:var(--orange-bg);border-radius:var(--r-lg);border:1px solid var(--orange);">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--orange);margin-bottom:var(--s2);">user 14 — 추천 품질</div>
+          <p style="font-size:0.8125rem;color:var(--text-primary);line-height:1.5;">
+            "좋아하는 장르가 아니에요. J팝 가수와 인디 가수를 선호 가수로 선택했는데..."
+          </p>
+          <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:var(--s2);">이탈: Jan 6</div>
+        </div>
+        <div style="padding:var(--s4);background-color:var(--red-bg);border-radius:var(--r-lg);border:1px solid var(--red);">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--red);margin-bottom:var(--s2);">user 11 — 응답 속도</div>
+          <p style="font-size:0.8125rem;color:var(--text-primary);line-height:1.5;">
+            "플레이리스트가 나오는 데 너무 오래 걸려요"
+          </p>
+          <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:var(--s2);">이탈: Jan 12 이후 (개인화 도입 후 지연 급등)</div>
+        </div>
+      </div>
+      <div class="insight-callout">
+        <strong>인사이트:</strong> 이탈을 단일 원인으로 보면 잘못된 해결책을 만듭니다.
+        이 두 케이스가 각각 "콘텐츠 품질 개선"과 "신기능 도입 시 모니터링 강화"라는
+        전혀 다른 대응을 요구합니다.
+      </div>
+    </div>
+
+    <!-- Finding 5: RMSE -->
+    <div class="finding-card">
+      <div class="finding-card__header">
+        <div class="finding-card__num">05</div>
+        <div class="finding-card__title">RMSE 1.14 — "틀린 모델"의 가치</div>
+      </div>
+      <div class="finding-card__body">
+        지연 시간만으로 만족도를 예측하는 모델의 오차가 평균 1점 이상입니다.
+        이 결과의 진짜 가치는 틀렸다는 사실 자체에 있습니다.
+      </div>
+      <div class="rmse-card">
+        <p style="font-size:0.8125rem;color:var(--text-secondary);">단순 모델 (가설):</p>
+        <div class="rmse-card__formula">Predicted = 4.0 − 0.15 × latency_sec</div>
+        <p style="font-size:0.8125rem;color:var(--text-primary);">
+          → RMSE = <strong>1.1353</strong> (4점 만점 척도에서 1점 이상 틀림)
+        </p>
+      </div>
+      <div class="insight-callout mt-4">
+        <strong>인사이트:</strong> "빠르면 만족한다"는 직관을 수치로 반박했습니다.
+        만족도를 설명하는 더 중요한 변수는 콘텐츠 품질(Context Accuracy, 장르 일치도)입니다.
+        성능 최적화보다 <strong>맥락 정확도 개선</strong>에 개발 리소스를 우선 배분해야 한다는
+        데이터 기반 근거입니다.
+      </div>
+    </div>
+
+    <!-- Finding 6: Usage Pattern -->
+    <div class="finding-card">
+      <div class="finding-card__header">
+        <div class="finding-card__num">06</div>
+        <div class="finding-card__title">일관된 맥락 사용 패턴 — 설계 검증</div>
+      </div>
+      <div class="finding-card__body">
+        사용자들은 무작위로 서비스를 사용하지 않았습니다.
+        카페×집중·활력, 집/실내×휴식·수면, 코워킹×집중·활력, 헬스장×활력 조합이 일관되게 나타났습니다.
+        이것은 단순한 사용 현황 이상의 의미를 가집니다.
+      </div>
+      <div class="insight-callout">
+        <strong>인사이트:</strong> RAED 데이터를 바탕으로 설계한 추천 로직이 실제 사용 맥락과
+        정합한다는 간접 검증입니다. 외부 데이터 기반 설계 근거가 실제로 작동했습니다.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =============================================
+     BUSINESS IMPACT SECTION
+     ============================================= -->
+<section class="section" id="impact">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Business Impact</div>
+      <h2 class="section-title">분석 결과가 만들 수 있는 것들</h2>
+      <p class="section-desc">
+        이 분석은 보고서가 아닙니다. 실제 의사결정에 활용될 수 있는
+        세 가지 비즈니스 가치를 도출했습니다.
+      </p>
+    </div>
+
+    <div class="impact-grid">
+
+      <div class="impact-card">
+        <div class="impact-card__header">
+          <div class="impact-card__icon">🎯</div>
+          <div>
+            <div class="impact-card__title">추천 품질 고도화 로드맵</div>
+            <div class="impact-card__subtitle">DLC 약점 지도를 우선순위 지도로</div>
+          </div>
+        </div>
+        <div class="impact-card__body">
+          카페-분노(0%), 도서관-위로(25%) 등 전환율 하위 조합이 명확히 특정됐습니다.
+          "어디가 문제인지 모른다"에서 "어디부터 개선해야 하는지 안다"로 바뀌었습니다.
+        </div>
+        <div class="impact-items">
+          <div class="impact-item">
+            <div class="impact-item__check">✓</div>
+            <div class="impact-item__text">공공 공간 + 개인 감정 케어 조합에 맞춤 추천 로직 설계</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-item__check">✓</div>
+            <div class="impact-item__text">Context Accuracy 미달 19% 원인(키워드 대신 유의어 사용) 확인 → Semantic Similarity 도입 방향 도출</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact-card">
+        <div class="impact-card__header">
+          <div class="impact-card__icon">🔄</div>
+          <div>
+            <div class="impact-card__title">신기능 출시 전략</div>
+            <div class="impact-card__subtitle">개인화 도입 → 이탈 패턴의 실증 근거</div>
+          </div>
+        </div>
+        <div class="impact-card__body">
+          개인화 도입 후 응답 시간 급등 → 이탈 발생 패턴은,
+          신기능 출시 시 A/B 테스트와 성능 모니터링을 선행해야 한다는 실증적 근거입니다.
+          <strong>이것이 팀의 개발 우선순위를 실제로 바꿨습니다.</strong>
+        </div>
+        <div class="impact-items">
+          <div class="impact-item">
+            <div class="impact-item__check">✓</div>
+            <div class="impact-item__text">전체 롤아웃 전 소규모 코호트 테스트 단계 추가 정당화</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-item__check">✓</div>
+            <div class="impact-item__text">기능 변경 직후 7일간 집중 모니터링 프로토콜 근거</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact-card">
+        <div class="impact-card__header">
+          <div class="impact-card__icon">🚀</div>
+          <div>
+            <div class="impact-card__title">신규 사용자 온보딩 전략</div>
+            <div class="impact-card__subtitle">초기 경험이 충성도를 결정한다는 데이터</div>
+          </div>
+        </div>
+        <div class="impact-card__body">
+          충성파(23.3회)와 이탈 위험파(6회)의 분기점은 초반 몇 회에 있습니다.
+          첫 3~5회 추천에 더 높은 품질 기준을 적용하거나,
+          초기 사용자에게 추가 취향 수집 플로우를 설계하는 데이터 기반 근거입니다.
+        </div>
+        <div class="impact-items">
+          <div class="impact-item">
+            <div class="impact-item__check">✓</div>
+            <div class="impact-item__text">충성파 선호 패턴(energetic 70.4%, lyrics_on 88.9%) → 초기 추천 강화 방향</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-item__check">✓</div>
+            <div class="impact-item__text">LLM 서비스 전반에 적용 가능한 "행동 기반 품질 측정" 프레임워크</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     MY CONTRIBUTION SECTION
+     ============================================= -->
+<section class="section section--alt" id="contribution">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">My Contribution</div>
+      <h2 class="section-title">내가 한 일</h2>
+      <p class="section-desc">
+        팀 내 유일한 데이터 분석가로서, 분석 관련 전 영역을 단독으로 수행했습니다.
+      </p>
+    </div>
+
+    <div class="contribution-grid">
+      <div class="contrib-card">
+        <div class="contrib-card__area">설계</div>
+        <div class="contrib-card__title">분석 방향 및 범위 정의</div>
+        <div class="contrib-card__body">어떤 질문에, 어떤 데이터로, 어떤 방법론으로 답할지. 분석의 전체 설계도를 작성했습니다.</div>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card__area">데이터</div>
+        <div class="contrib-card__title">외부 데이터 수집 및 전처리</div>
+        <div class="contrib-card__body">3개 데이터셋 수집·정제, 위치·소음 구간 매핑 설계. Left Join·복합 키 조인으로 이종 데이터 연결.</div>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card__area">분석</div>
+        <div class="contrib-card__title">추천 로직 근거 설계</div>
+        <div class="contrib-card__body">3개 데이터셋 연결로 소음×목표×위치 우선순위 매트릭스를 수치화했습니다.</div>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card__area">측정</div>
+        <div class="contrib-card__title">KPI 설계 및 측정</div>
+        <div class="contrib-card__body">8개 후보 → 탈락 사유 분석 → 최종 5개 실측. 각 지표의 측정 한계를 함께 명시.</div>
+      </div>
+      <div class="contrib-card" style="border-color:var(--color-primary);background-color:var(--color-primary-bg);">
+        <div class="contrib-card__area" style="color:var(--color-primary);">핵심 기여</div>
+        <div class="contrib-card__title">사전배포 제안 및 실행</div>
+        <div class="contrib-card__body">팀 원안에 없던 단계를 논리로 설득, 로그 스키마 직접 정의, 18명·약 300건 실사용자 데이터 확보.</div>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card__area">분석</div>
+        <div class="contrib-card__title">사용자 로그 분석</div>
+        <div class="contrib-card__body">경향성·만족도·세그먼트·빈도·시계열·최신성 6가지 분석. 복합 키 조인으로 측정 정확도 확보.</div>
+      </div>
+      <div class="contrib-card" style="border-color:var(--green);background-color:var(--green-bg);">
+        <div class="contrib-card__area" style="color:var(--green);">임팩트</div>
+        <div class="contrib-card__title">인사이트 → 팀 의사결정 반영</div>
+        <div class="contrib-card__body">이탈 원인 분석 결과를 공유 → 개발 우선순위 실제 변경. 분석이 결정으로 이어진 완결된 사이클.</div>
+      </div>
+      <div class="contrib-card">
+        <div class="contrib-card__area">아키텍처</div>
+        <div class="contrib-card__title">추천 엔진 설계 참여</div>
+        <div class="contrib-card__body">LangGraph 9노드 아키텍처 설계에 추천 로직 근거 방향 제공. LLM/API 역할 분리 구조 도출.</div>
+      </div>
+    </div>
+
+    <!-- Key decisions accordion -->
+    <div class="decisions-list mt-10">
+      <div class="decisions-list__title">주요 의사결정 4가지</div>
+      <div class="accordion">
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span class="accordion-trigger__title">표준 지표(NDCG 등) 포기 결정</span>
+            <span class="accordion-trigger__icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>정답 레이블 부재를 인식하고, 서비스 맥락 KPI를 직접 설계했습니다.
+            "있는 도구를 쓰는 것"이 아닌 "필요한 도구를 만드는 것"을 선택했습니다.</p>
+            <div class="skill-tags">
+              <span class="skill-tag">문제 재정의</span>
+              <span class="skill-tag">창의적 접근</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span class="accordion-trigger__title">소음 측정을 추천 변수 1순위로 설정</span>
+            <span class="accordion-trigger__icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>RAED 데이터 분석으로 "장소보다 행동이 소음을 결정한다"는 수치 근거를 만들었고,
+            이것이 앱에서 실시간 소음 센서를 사용하는 설계의 데이터 근거가 됐습니다.</p>
+            <div class="skill-tags">
+              <span class="skill-tag">데이터 기반 설계</span>
+              <span class="skill-tag">엔지니어링 협업</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span class="accordion-trigger__title">사전배포 필요성 제안 및 설득</span>
+            <span class="accordion-trigger__icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>"측정 가능한 환경을 먼저 만들어야 한다"는 논리로 팀을 설득했습니다.
+            앱 종료 로그 등 구현 난이도가 높은 항목은 개발팀과 협의해 제외하는 현실적 조율도 함께 진행했습니다.</p>
+            <div class="skill-tags">
+              <span class="skill-tag">팀 설득</span>
+              <span class="skill-tag">스키마 설계</span>
+              <span class="skill-tag">실행력</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span class="accordion-trigger__title">복합 키 조인 설계로 측정 정확도 확보</span>
+            <span class="accordion-trigger__icon">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>RMSE 산출 시 user_id 단일 조인이 아닌 4컬럼 복합 키(user_id + session + timestamp + playlist_id)로
+            매칭 정확도를 확보했습니다. 단순한 join 방식의 선택이 측정 결과의 신뢰성에 직접 영향을 미칩니다.</p>
+            <div class="skill-tags">
+              <span class="skill-tag">데이터 정합성</span>
+              <span class="skill-tag">SQL / pandas</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =============================================
+     DIFFERENTIATION SECTION
+     ============================================= -->
+<section class="section" id="differentiation">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Differentiation</div>
+      <h2 class="section-title">이 프로젝트를 다르게 만드는 것</h2>
+      <p class="section-desc">
+        대부분의 포트폴리오 프로젝트는 있는 데이터를 분석합니다.
+        이 프로젝트는 그것과 다른 네 가지를 담고 있습니다.
+      </p>
+    </div>
+
+    <div class="diff-list">
+
+      <div class="diff-item">
+        <div class="diff-item__num">1</div>
+        <div>
+          <div class="diff-item__tag">분석 환경 설계</div>
+          <div class="diff-item__title">"분석할 환경"을 직접 만들었다</div>
+          <div class="diff-item__body">
+            필요한 데이터가 존재하지 않는 상황에서, 사전배포를 제안하고
+            로그 스키마를 직접 설계해 데이터를 만들었습니다.
+            "측정할 수 없으면 개선할 수 없다. 그렇다면 측정 가능한 상태부터 만들어야 한다."
+          </div>
+          <div class="diff-item__why">
+            실무에서 분석에 필요한 로그가 항상 존재하지 않습니다.
+            무엇을 어떻게 수집할지를 설계할 수 있는 분석가는 수동적 수용자가 아닌 시스템의 공동 설계자입니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="diff-item">
+        <div class="diff-item__num">2</div>
+        <div>
+          <div class="diff-item__tag">KPI Zero-Design</div>
+          <div class="diff-item__title">없던 기준을 직접 만들었다</div>
+          <div class="diff-item__body">
+            Precision, Recall처럼 계산만 하면 되는 지표가 아니라,
+            "이 서비스에서 좋은 추천이란 무엇인가"라는 질문 자체를 정의했습니다.
+            8개 후보 중 3개가 탈락한 사유를 기록하고, 각 지표의 한계를 함께 명시했습니다.
+          </div>
+          <div class="diff-item__why">
+            수치를 만드는 것보다 그 수치를 얼마나 신뢰할 수 있는지를 아는 것이 더 어렵습니다.
+            지표의 한계를 함께 제시하는 태도는 잘못된 결정을 막는 핵심 역량입니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="diff-item">
+        <div class="diff-item__num">3</div>
+        <div>
+          <div class="diff-item__tag">분석 → 결정</div>
+          <div class="diff-item__title">분석이 실제 결정으로 이어졌다</div>
+          <div class="diff-item__body">
+            이탈 원인 분석 → 팀 공유 → 개발 우선순위 변경.
+            보고서가 서랍 속에 들어가지 않고 팀의 행동을 실제로 바꿨습니다.
+            분석가의 가장 중요한 역할인 "분석 결과를 조직 결정으로 연결"을 직접 경험했습니다.
+          </div>
+          <div class="diff-item__why">
+            분석가의 가치는 수치를 계산하는 것이 아니라 그 수치가 조직 결정에 영향을 미칠 때 실현됩니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="diff-item">
+        <div class="diff-item__num">4</div>
+        <div>
+          <div class="diff-item__tag">이종 데이터 연결</div>
+          <div class="diff-item__title">연결이 새로운 임계값을 만들었다</div>
+          <div class="diff-item__body">
+            환경공단(장소별 소음) + RAED(행동별 실제 소음) + Spotify(음악 특성)를 연결해
+            "카페+40dB = lofi, 카페+60dB = 팝"이라는 수치 기반 추천 기준을 만들었습니다.
+            단일 데이터셋 분석으로는 나올 수 없는 결론입니다.
+          </div>
+          <div class="diff-item__why">
+            데이터 결합 설계 자체가 분석 역량의 증거입니다.
+            연결이 없으면 "집중할 땐 lofi가 좋다"는 감에 머뭅니다.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     LESSONS LEARNED SECTION
+     ============================================= -->
+<section class="section section--alt" id="lessons">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-tag">Lessons Learned</div>
+      <h2 class="section-title">잘 됐던 것과 아쉬운 것</h2>
+      <p class="section-desc">
+        한계를 솔직히 서술하는 분석가가 수치를 맹신하지 않습니다.
+      </p>
+    </div>
+
+    <div class="lessons-grid">
+
+      <div class="lesson-card">
+        <div class="lesson-card__emoji">✅</div>
+        <div class="lesson-card__title">잘 됐던 것</div>
+        <div class="lesson-card__body">
+          로그 스키마를 직접 설계한 덕에 분석에 필요한 데이터가 정확히 수집됐습니다.
+          "어떤 데이터가 필요한지"를 먼저 정의하고 구현을 요청한 것이 핵심이었습니다.
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-card__emoji">⚠️</div>
+        <div class="lesson-card__title">한계 — 표본 크기</div>
+        <div class="lesson-card__body">
+          18명의 응답에서 1~2명의 이탈이 전체 수치에 크게 영향을 미칩니다.
+          절대 수치보다 방향성 지표로 해석해야 하며, 인과 관계 증명에는 한계가 있습니다.
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-card__emoji">⚠️</div>
+        <div class="lesson-card__title">한계 — 측정 기준의 관대함</div>
+        <div class="lesson-card__body">
+          Persona-Genre Accuracy 100%는 "완벽한 반영"이 아닌 "키워드 포함 기준"의 결과입니다.
+          수치의 의미를 측정 기준과 함께 해석해야 합니다.
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-card__emoji">💡</div>
+        <div class="lesson-card__title">배운 것 — DB 설계의 중요성</div>
+        <div class="lesson-card__body">
+          Re-roll Rate가 DB 설계 이슈로 측정 불가능했습니다.
+          분석 관점을 데이터 수집 단계에서 미리 반영해야 한다는 교훈.
+          분석가가 DB 설계 단계부터 개입해야 하는 이유입니다.
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-card__emoji">💡</div>
+        <div class="lesson-card__title">배운 것 — EDA가 ground truth</div>
+        <div class="lesson-card__body">
+          Spotify Audio Features API 403 차단 이후, EDA 분석으로 장르 특성을 직접 도출했습니다.
+          API 없이도 데이터 기반 로직을 구현할 수 있었다는 발견은
+          제약 상황에서의 대안적 사고를 보여줍니다.
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <div class="lesson-card__emoji">🔮</div>
+        <div class="lesson-card__title">다음에는</div>
+        <div class="lesson-card__body">
+          Context Accuracy에 Semantic Similarity(sentence-BERT) 기반 평가를 도입하면
+          키워드 매칭의 한계를 극복할 수 있습니다.
+          히트맵에 세션 수(데이터 신뢰도)를 두 번째 레이어로 추가하는 것도 필요합니다.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     SUMMARY SECTION
+     ============================================= -->
+<section class="section" id="summary">
+  <div class="container">
+    <div class="summary-wrap">
+
+      <h2 class="summary-headline">
+        있는 데이터를 분석하는 것을 넘어,<br>
+        <em>분석할 환경을 만들고</em><br>
+        결과를 팀의 결정으로 연결하는 사람
+      </h2>
+
+      <p class="summary-desc">
+        정답 레이블도 표준 지표도 없는 상황에서 KPI를 직접 설계하고,
+        팀에 없던 사전배포를 제안해 실사용자 데이터를 확보했습니다.
+        그리고 그 분석 결과가 실제로 팀의 개발 방향을 바꿨습니다.
+      </p>
+
+      <div class="summary-tags">
+        <span class="summary-tag">문제 정의 능력</span>
+        <span class="summary-tag">KPI 설계 경험</span>
+        <span class="summary-tag">이종 데이터 연결</span>
+        <span class="summary-tag">분석 → 의사결정 연결</span>
+        <span class="summary-tag">측정 환경 직접 설계</span>
+        <span class="summary-tag">팀 설득 & 협업</span>
+      </div>
+
+      <!-- Final recap: 5 KPI numbers -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4);text-align:left;">
+        <div class="stat-card">
+          <div class="stat-card__value">85.15<sup>%</sup></div>
+          <div class="stat-card__label">DLC</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">81.17<sup>%</sup></div>
+          <div class="stat-card__label">Context Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">7.62<sup>s</sup></div>
+          <div class="stat-card__label">Avg. Latency</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">100<sup>%</sup></div>
+          <div class="stat-card__label">Persona-Genre Acc.</div>
+          <div class="stat-card__desc">※ 키워드 포함 기준</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">1.14</div>
+          <div class="stat-card__label">Satisfaction RMSE</div>
+          <div class="stat-card__desc">지연 시간 단일 모델</div>
+        </div>
+        <div class="stat-card stat-card--accent">
+          <div class="stat-card__value">→</div>
+          <div class="stat-card__label">개발 방향 변경</div>
+          <div class="stat-card__desc">분석의 실질적 임팩트</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- =============================================
+     FOOTER
+     ============================================= -->
+<footer class="footer">
+  <div class="container">
+    <p class="footer__text">
+      DIP Project · Data Analysis Portfolio · 2026<br>
+      Python · pandas · sklearn · LangGraph · Spotify API · 공공데이터
+    </p>
+  </div>
+</footer>
+
+
+<script src="script.js"></script>
+</body>
+</html>
